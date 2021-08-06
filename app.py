@@ -30,14 +30,29 @@ def get_tasks():
     return render_template("tasks.html", tasks=tasks)
 
 
-@app.route("/register.html", methods=['POST','GET'])
+@app.route("/register.html", methods=['POST', 'GET'])
 def register():
-    return render_template("register.html") 
+    if request.method == "POST":
+        existing_user = mongo.db.users.find_one(
+            {"username": request.form.get("username").lower()})
+        
+        if existing_user:
+            flash("Username already exists!")
+            return redirect(url_for("register"))
+        
+        register = {
+            "username": request.form.get("username").lower(),
+            "password": generate_password_hash(request.form.get("password"))
+            }
+        mongo.db.users.insert_one(register)
 
+        session["user"] = request.form.get("username").lower()
+        flash("Reistration Successful")
+
+    return render_template("register.html")
 
 # set host and ip from env.py
 if __name__ == "__main__":
     app.run(host=os.environ.get("IP"),
             port=int(os.environ.get("PORT")),
             debug=True)
-
