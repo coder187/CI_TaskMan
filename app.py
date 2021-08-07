@@ -30,6 +30,14 @@ def get_tasks():
     return render_template("tasks.html", tasks=tasks)
 
 
+@app.route("/profile/<username>", methods=['POST', 'GET'])
+def profile(username):
+    # username = mongo.db.users.find_one(
+    #        {"username": session["user"]})["username"]
+    # return render_template("profile.html",username=username)
+    # why query the db when the session already has the username
+    return render_template("profile.html",username=session["user"])
+
 @app.route("/login.html", methods=['POST', 'GET'])
 def login():
     if request.method == "POST":
@@ -41,6 +49,7 @@ def login():
                 existing_user["password"],request.form.get("password")):
                     flash("Welcome, {}".format(request.form.get("username")))
                     session["user"] = request.form.get("username").lower()
+                    return render_template("profile.html",username=session["user"])
 
             else:
                 flash("Username and/or Password Incorrect")
@@ -69,6 +78,7 @@ def register():
 
         session["user"] = request.form.get("username").lower()
         flash("Reistration Successful")
+        return render_template("profile.html",username=session["user"])
 
     return render_template("register.html")
 
