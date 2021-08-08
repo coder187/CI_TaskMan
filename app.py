@@ -30,13 +30,27 @@ def get_tasks():
     return render_template("tasks.html", tasks=tasks)
 
 
+@app.route("/logout")
+def logout():
+    flash("You have been logged out")
+    session.pop("user")
+    return redirect(url_for("login"))
+
+
 @app.route("/profile/<username>", methods=['POST', 'GET'])
 def profile(username):
     # username = mongo.db.users.find_one(
     #        {"username": session["user"]})["username"]
     # return render_template("profile.html",username=username)
     # why query the db when the session already has the username
-    return render_template("profile.html",username=session["user"])
+
+    # check for authenitcated user
+    # if session["user"]:  # if session user is truthy
+    if session.get('user'):
+        return render_template("profile.html",username=session["user"])
+    
+    # if not auhtenitcated redirect to login page
+    return redirect(url_for("login"))
 
 @app.route("/login.html", methods=['POST', 'GET'])
 def login():
@@ -50,6 +64,8 @@ def login():
                     flash("Welcome, {}".format(request.form.get("username")))
                     session["user"] = request.form.get("username").lower()
                     return render_template("profile.html",username=session["user"])
+
+
 
             else:
                 flash("Username and/or Password Incorrect")
