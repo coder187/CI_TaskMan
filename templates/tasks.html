@@ -12,18 +12,27 @@
 
     
 
-<ul class="collapsible">
-    <li>
-      <div class="collapsible-header white-text light-blue darken-4 text-shadow"><i class="fas fa-caret-down">First</i>First</div>
-      <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
-    </li>
-    <li>
-      <div class="collapsible-header white-text light-blue darken-4 text-shadow"><i class="fas fa-caret-down">Second</i>Second</div>
-      <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
-    </li>
-    <li>
-      <div class="collapsible-header white-text light-blue darken-4 text-shadow"><i class="fas fa-caret-down">Third</i>Third</div>
-      <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
-    </li>
-  </ul>
+    <ul class="collapsible">
+        {% for task in tasks %}
+            <li>
+                <div class="collapsible-header white-text light-blue darken-4 text-shadow">
+                    <i class="fas fa-caret-down"></i>
+                    <strong>{{ task.task_name }}</strong>&nbsp;:&nbsp;{{ task.due_date }}
+                    {% if task.is_urgent== "on" %}
+                        &nbsp;
+                        <i class="fas fa-exclamation-circle light-blue-text text-lighten-2 tooltipped" 
+                            data-position="right" data-tooltip="Urgent!"></i>
+                    {% endif %}
+                </div>
+                <div class="collapsible-body">
+                    <strong>
+                        {{ task.category_name }}
+                    </strong>
+                    <p>
+                        {{ task.task_descriptio }}
+                    </p>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
   {% endblock %}

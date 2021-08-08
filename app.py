@@ -22,18 +22,12 @@ mongo = PyMongo(app)
 
 @app.route("/")
 @app.route("/get_tasks")
-
 def get_tasks():
-    tasks = mongo.db.tasks.find()
+    tasks = list(mongo.db.tasks.find())
     # The first 'tasks' is what the template will use, and that's equal to the second 'tasks', 
     # which is our variable defined above.
     return render_template("tasks.html", tasks=tasks)
 
-
-
-@app.route("/tasks.html")
-def tasks():
-    return render_template("tasks.html")
 
 
 @app.route("/logout")
