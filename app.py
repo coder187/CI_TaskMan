@@ -30,6 +30,12 @@ def get_tasks():
     return render_template("tasks.html", tasks=tasks)
 
 
+
+@app.route("/tasks.html")
+def tasks():
+    return render_template("tasks.html")
+
+
 @app.route("/logout")
 def logout():
     flash("You have been logged out")
