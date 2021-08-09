@@ -99,10 +99,27 @@ def register():
     return render_template("register.html")
 
 
-@app.route("/add_task.html")
+@app.route("/add_task.html", methods=['POST', 'GET'])
 def add_task():
-    categories = mongo.db.categories.find().sort("category_name",1)
+    # if POST then  add record
+    # ELSE GET then return list of Categories for combo box
+    if request.method == "POST":
+        is_urgent = "on" if request.form.get("is_urgent") else "off"
 
+        task = {
+            "category_name": request.form.get("category_name"),
+            "task_name": request.form.get("task_name"),
+            "task_descriptio": request.form.get("task_description"),    
+            "due_date": request.form.get("due_date"),
+            "is_urgent": is_urgent,
+            "created_by": session["user"]
+        }   
+
+        mongo.db.tasks.insert_one(task)
+        flash("Task Inserted Successfully")
+        return redirect(url_for("get_tasks"))
+
+    categories = mongo.db.categories.find().sort("category_name",1)
     return render_template("add_task.html",categories=categories)
 
 
