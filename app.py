@@ -101,7 +101,9 @@ def register():
 
 @app.route("/add_task.html")
 def add_task():
-    return render_template("add_task.html")
+    categories = mongo.db.categories.find().sort("category_name",1)
+
+    return render_template("add_task.html",categories=categories)
 
 
 # set host and ip from env.py
