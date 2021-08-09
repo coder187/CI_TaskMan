@@ -98,6 +98,12 @@ def register():
 
     return render_template("register.html")
 
+
+@app.route("/add_task.html")
+def add_task():
+    return render_template("add_task.html")
+
+
 # set host and ip from env.py
 if __name__ == "__main__":
     app.run(host=os.environ.get("IP"),
