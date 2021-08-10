@@ -105,11 +105,11 @@ def add_task():
     # ELSE GET then return list of Categories for combo box
     if request.method == "POST":
         is_urgent = "on" if request.form.get("is_urgent") else "off"
-
+        print(request.form.get("category_name"))
         task = {
             "category_name": request.form.get("category_name"),
             "task_name": request.form.get("task_name"),
-            "task_descriptio": request.form.get("task_description"),    
+            "task_descriptio": request.form.get("task_description"),   
             "due_date": request.form.get("due_date"),
             "is_urgent": is_urgent,
             "created_by": session["user"]
@@ -125,10 +125,27 @@ def add_task():
 
 @app.route("/edit_task/<task_id>", methods=['POST', 'GET'])
 def edit_task(task_id):
+
     task = mongo.db.tasks.find_one({"_id": ObjectId(task_id)})
+    if request.method == "POST":
+        
+        is_urgent = "on" if request.form.get("is_urgent") else "off"
+
+        submit = {
+            "category_name": request.form.get("category_name"),
+            "task_name": request.form.get("task_name"),
+            "task_descriptio": request.form.get("task_description"),    
+            "due_date": request.form.get("due_date"),
+            "is_urgent": is_urgent,
+            "created_by": session["user"]
+        }   
+
+        mongo.db.tasks.update({"_id": ObjectId(task_id)},submit)
+        flash("Task Udated Successfully")
+            
 
     categories = mongo.db.categories.find().sort("category_name",1)
-    return render_template("edit_task.html",task=task,categories=categories)
+    return render_template("edit_task.html", task=task,categories=categories)
 
 # set host and ip from env.py
 if __name__ == "__main__":
