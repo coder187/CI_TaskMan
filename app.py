@@ -142,7 +142,6 @@ def edit_task(task_id):
 
         mongo.db.tasks.update({"_id": ObjectId(task_id)},submit)
         flash("Task Udated Successfully")
-            
 
     categories = mongo.db.categories.find().sort("category_name",1)
     return render_template("edit_task.html", task=task,categories=categories)
@@ -152,6 +151,15 @@ def delete_task(task_id):
     mongo.db.tasks.remove({"_id": ObjectId(task_id)})
     flash("Task Successfully Deleted")
     return redirect(url_for("get_tasks"))
+
+
+@app.route("/get_categories.html")
+def get_categories():    
+    if session["user"].lower() != "admin":
+        return redirect(url_for("login"))
+
+    categories = list(mongo.db.categories.find().sort("category_name",1))
+    return render_template("get_categories.html", categories=categories)
 
 # set host and ip from env.py
 if __name__ == "__main__":
