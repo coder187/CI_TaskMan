@@ -154,12 +154,39 @@ def delete_task(task_id):
 
 
 @app.route("/get_categories.html")
-def get_categories():    
+def get_categories():
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     if session["user"].lower() != "admin":
         return redirect(url_for("login"))
-
+    
     categories = list(mongo.db.categories.find().sort("category_name",1))
     return render_template("get_categories.html", categories=categories)
+
+
+@app.route("/add_category.html", methods=['POST', 'GET'])
+def add_category():
+    if session["user"].lower() != "admin":
+        return redirect(url_for("login"))
+    
+    if request.method == "POST":
+        category = {
+            "category_name": request.form.get("category_name")
+        }
+        mongo.db.categories.insert_one(category)
+        flash("Category Added Successfully")
+        return redirect(url_for("get_categories"))
+
+    return render_template("add_category.html")
+
+@app.route("/delete_category<category_id>")
+def delete_category(category_id):
+    if session["user"].lower() != "admin":
+        return redirect(url_for("login"))
+    
+    mongo.db.categories.remove({"_id": ObjectId(category_id)})
+    flash("Category Successfully Deleted")
+    return redirect(url_for("get_categories"))
+
 
 # set host and ip from env.py
 if __name__ == "__main__":
