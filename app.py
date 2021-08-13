@@ -28,6 +28,11 @@ def get_tasks():
     # which is our variable defined above.
     return render_template("tasks.html", tasks=tasks)
 
+@app.route("/search", methods=['POST', 'GET'])
+def search():
+    query = request.form.get("query")
+    tasks = list(mongo.db.tasks.find({"$text": {"$search":query}}))
+    return render_template("tasks.html", tasks=tasks)
 
 
 @app.route("/logout")
